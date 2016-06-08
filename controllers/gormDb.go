@@ -20,5 +20,5 @@ func InitGormDb() {
 	db.DB().SetMaxOpenConns(100)
 	// Disable table name's pluralization
 	db.SingularTable(true)
-	DB = &db
+	DB = db
 }

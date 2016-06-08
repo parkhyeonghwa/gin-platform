@@ -5,14 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"hzl/iris-test/controllers"
-	"hzl/iris-test/controllers/ctl"
-	"hzl/iris-test/models"
+	"hzl/gin-test/controllers"
+	"hzl/gin-test/controllers/ctl"
+	"hzl/gin-test/models"
 )
 
 func main() {
 	gin.SetMode(gin.DebugMode)
-	//	gin.SetMode(gin.ReleaseMode) //run in release mode
+	//gin.SetMode(gin.ReleaseMode) //run in release mode
 
 	/* Init GormDb */
 	controllers.InitGormDb()
@@ -24,10 +24,13 @@ func main() {
 	log.Println("Connected to Redis.\n")
 
 	/* Init Socket */
-	controllers.InitSocket()
+	//controllers.InitSocket()
 
 	/* Init MQTT */
 	//controllers.InitMQTT()
+
+	/* Init Cronjob */
+	controllers.InitCronJob()
 
 	/* Register All Routes Here */
 	router := registerAllRoutes()
@@ -42,16 +45,19 @@ func AutoMigrateDatabase() {
 
 func registerAllRoutes() *gin.Engine {
 	router := gin.Default()
-	// Simple group: v1
-	v1 := router.Group("/v1")
+
+	// group: user
+	userRouter := router.Group("/user")
 	{
-		v1.GET("/test/:param1", ctl.Test1)
+		userRouter.GET("/:user_id", user.UserInfo)
+		userRouter.POST("/", user.UserAdd)
+		userRouter.DELETE("/", user.UserDel)
 	}
 
-	// Simple group: v2
-	v2 := router.Group("/v2")
+	// group: post
+	postRouter := router.Group("/post")
 	{
-		v2.GET("/test/:param1", ctl.Test1)
+		postRouter.GET("/detail/:param1", user.UserInfo)
 	}
 
 	return router
