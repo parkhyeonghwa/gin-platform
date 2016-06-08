@@ -3,8 +3,8 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"hzl/gin-test/models"
-	"hzl/gin-test/controllers"
+	"hzl.im/gin-platform/models"
+	"hzl.im/gin-platform/controllers"
 	"strconv"
 )
 

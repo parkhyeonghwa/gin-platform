@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"hzl/gin-test/controllers"
-	"hzl/gin-test/controllers/ctl"
-	"hzl/gin-test/models"
+	"hzl.im/gin-platform/controllers"
+	"hzl.im/gin-platform/controllers/ctl"
+	"hzl.im/gin-platform/models"
 )
 
 func main() {
