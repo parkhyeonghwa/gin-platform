@@ -3,9 +3,10 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"hzl.im/gin-platform/models"
-	"hzl.im/gin-platform/controllers"
+
 	"strconv"
+	"hzl.im/gin-platform/services"
+	"hzl.im/gin-platform/models"
 )
 
 func UserList(ctx *gin.Context) {
@@ -21,7 +22,7 @@ func UserList(ctx *gin.Context) {
 		limit = 20
 	}
 
-	rows := controllers.DB.Order("id desc").Limit(limit).Offset(offset).Find(&users)
+	rows := services.DB.Order("id desc").Limit(limit).Offset(offset).Find(&users)
 	if rows.Error != nil {
 		res := models.ResultData{9998, "list user fail", ""}
 		ctx.JSON(http.StatusInternalServerError, res)
@@ -35,7 +36,7 @@ func UserList(ctx *gin.Context) {
 func UserInfo(ctx *gin.Context) {
 	user_id := ctx.Param("user_id")
 	user := &models.User{}
-	if err := controllers.DB.First(&user, user_id).Error; err != nil {
+	if err := services.DB.First(&user, user_id).Error; err != nil {
 		res := models.ResultData{1, "user not exist", ""}
 		ctx.JSON(http.StatusNotFound, res)
 		return
@@ -53,7 +54,7 @@ func UserAdd(ctx *gin.Context) {
 		return
 	}
 
-	if err := controllers.DB.Create(user).Error; err != nil {
+	if err := services.DB.Create(user).Error; err != nil {
 		res := models.ResultData{9998, "add user fail", ""}
 		ctx.JSON(http.StatusInternalServerError, res)
 		return
@@ -72,13 +73,13 @@ func UserDel(ctx *gin.Context) {
 	}
 
 	user := &models.User{}
-	if err := controllers.DB.First(&user, user_id).Error; err != nil {
+	if err := services.DB.First(&user, user_id).Error; err != nil {
 		res := models.ResultData{1, "user not exist", ""}
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 
-	if err := controllers.DB.Delete(&user).Error; err != nil {
+	if err := services.DB.Delete(&user).Error; err != nil {
 		res := models.ResultData{9998, "del user fail", ""}
 		ctx.JSON(http.StatusInternalServerError, res)
 		return

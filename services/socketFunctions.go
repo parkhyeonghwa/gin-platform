@@ -1,20 +1,20 @@
-package controllers
+package services
 
 import (
 	"net"
 )
 
-type socketFunctions struct {
+type SocketFunctions struct {
 }
 
-func (c socketFunctions) Login(conn net.Conn, data interface{}) {
+func (c SocketFunctions) Login(conn net.Conn, data interface{}) {
 	source := data.(map[string]interface{})
 	id := source["id"].(string)
 
 	Socketconnections[id] = conn
 }
 
-func (c socketFunctions) SendMessageToClient(data interface{}) {
+func (c SocketFunctions) SendMessageToClient(data interface{}) {
 	source := data.(map[string]interface{})
 
 	to := source["to"].(string)

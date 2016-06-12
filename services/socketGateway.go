@@ -1,4 +1,4 @@
-package controllers
+package services
 
 import (
 	"encoding/json"
@@ -70,11 +70,11 @@ func handleConnection(conn net.Conn, timout int) {
 		fmt.Println(pkg.Cmd)
 		switch {
 		case pkg.Cmd == "login": //用户登录，并且将id与socket连接绑定
-			var ctl socketFunctions
+			var ctl SocketFunctions
 			ctl.Login(conn, pkg.Data)
 
 		case pkg.Cmd == "sendMessage": //发送数据到指定ID
-			var ctl socketFunctions
+			var ctl SocketFunctions
 			ctl.SendMessageToClient(pkg.Data)
 
 		default:

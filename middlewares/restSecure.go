@@ -1,4 +1,4 @@
-package controllers
+package middlewares
 
 import (
 	"github.com/ChristopherRabotin/gin-contrib-headerauth"
