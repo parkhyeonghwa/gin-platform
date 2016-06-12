@@ -8,6 +8,28 @@ import (
 	"strconv"
 )
 
+func UserList(ctx *gin.Context) {
+	offset, err := strconv.Atoi(ctx.Param("offset"))
+	if err!=nil {
+		offset = 0
+	}
+
+	limit, err := strconv.Atoi(ctx.Param("limit"))
+	if err!=nil {
+		limit = 20
+	}
+
+	rows, err := controllers.DB.Table("user").Order("id desc").Limit(limit).Offset(offset).Rows()
+
+	if err != nil {
+		return
+	}
+
+	res := models.ResultData{0, "", rows}
+	ctx.JSON(http.StatusOK, res)
+}
+
+
 func UserInfo(ctx *gin.Context) {
 	user_id := ctx.Param("user_id")
 	user := &models.User{}

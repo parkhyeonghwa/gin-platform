@@ -4,10 +4,14 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/gzip"
+
 
 	"hzl.im/gin-platform/controllers"
 	"hzl.im/gin-platform/controllers/ctl"
 	"hzl.im/gin-platform/models"
+
+	"github.com/ChristopherRabotin/gin-contrib-headerauth"
 )
 
 func main() {
@@ -45,11 +49,17 @@ func AutoMigrateDatabase() {
 
 func registerAllRoutes() *gin.Engine {
 	router := gin.Default()
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
+
+	// add auth middleware
+	routesecure := controllers.TokenManger{headerauth.NewTokenManager("X-Token-Auth", "Token", "accessKey")}
+	router.Use(headerauth.HeaderAuth(routesecure))
 
 	// group: user
 	userRouter := router.Group("/user")
 	{
-		userRouter.GET("/:user_id", user.UserInfo)
+		userRouter.GET("/userList/:offset/:limit", user.UserList)
+		userRouter.GET("/info/:user_id", user.UserInfo)
 		userRouter.POST("/", user.UserAdd)
 		userRouter.DELETE("/", user.UserDel)
 	}
@@ -62,3 +72,5 @@ func registerAllRoutes() *gin.Engine {
 
 	return router
 }
+
+
