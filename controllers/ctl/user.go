@@ -9,6 +9,8 @@ import (
 )
 
 func UserList(ctx *gin.Context) {
+	users := []models.User{}
+
 	offset, err := strconv.Atoi(ctx.Param("offset"))
 	if err!=nil {
 		offset = 0
@@ -19,13 +21,13 @@ func UserList(ctx *gin.Context) {
 		limit = 20
 	}
 
-	rows, err := controllers.DB.Table("user").Order("id desc").Limit(limit).Offset(offset).Rows()
-
-	if err != nil {
-		return
+	rows := controllers.DB.Order("id desc").Limit(limit).Offset(offset).Find(&users)
+	if rows.Error != nil {
+		res := models.ResultData{9998, "list user fail", ""}
+		ctx.JSON(http.StatusInternalServerError, res)
 	}
 
-	res := models.ResultData{0, "", rows}
+	res := models.ResultData{0, "", rows.Value}
 	ctx.JSON(http.StatusOK, res)
 }
 
