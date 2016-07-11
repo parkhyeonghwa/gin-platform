@@ -7,11 +7,12 @@ import (
 	"github.com/gin-gonic/contrib/gzip"
 
 	"hzl.im/gin-platform/services"
-	"hzl.im/gin-platform/middlewares"
-	"hzl.im/gin-platform/controllers/user"
+	//"hzl.im/gin-platform/middlewares"
+	"hzl.im/gin-platform/controllers"
 	"hzl.im/gin-platform/models"
 
-	"github.com/ChristopherRabotin/gin-contrib-headerauth"
+	//"github.com/ChristopherRabotin/gin-contrib-headerauth"
+	"hzl.im/gin-platform/controllers/analysis"
 )
 
 func main() {
@@ -24,8 +25,8 @@ func main() {
 	log.Println("Connected to Database.\n")
 
 	/* Init Redis */
-	services.InitRedis()
-	log.Println("Connected to Redis.\n")
+	//services.InitRedis()
+	//log.Println("Connected to Redis.\n")
 
 	/* Init Socket */
 	//services.InitSocket()
@@ -49,25 +50,27 @@ func AutoMigrateDatabase() {
 
 func registerAllRoutes() *gin.Engine {
 	router := gin.Default()
+
+	router.LoadHTMLGlob("templates/*")
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// add auth middleware
-	routesecure := middlewares.TokenManger{headerauth.NewTokenManager("X-Token-Auth", "Token", "accessKey")}
-	router.Use(headerauth.HeaderAuth(routesecure))
+	//routesecure := middlewares.TokenManger{headerauth.NewTokenManager("X-Token-Auth", "Token", "accessKey")}
+	//router.Use(headerauth.HeaderAuth(routesecure))
 
 	// group: user
 	userRouter := router.Group("/user")
 	{
-		userRouter.GET("/userList/:offset/:limit", user.UserList)
-		userRouter.GET("/info/:user_id", user.UserInfo)
-		userRouter.POST("/", user.UserAdd)
-		userRouter.DELETE("/", user.UserDel)
+		userRouter.GET("/userList/:offset/:limit", controllers.UserList)
+		userRouter.GET("/info/:user_id", controllers.UserInfo)
+		userRouter.POST("/", controllers.UserAdd)
+		userRouter.DELETE("/", controllers.UserDel)
 	}
 
 	// group: post
-	postRouter := router.Group("/post")
+	postRouter := router.Group("/analysis")
 	{
-		postRouter.GET("/detail/:param1", user.UserInfo)
+		postRouter.GET("/showData", analysis.ShowData)
 	}
 
 	return router
